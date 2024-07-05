@@ -43,20 +43,20 @@ class MainActivity : ComponentActivity() {
 @Serializable
 sealed class Screens {
     @Serializable
-    object Auth {
+    data object Auth : Screens() {
         @Serializable
-        object EmailSignUp
+        data object EmailSignUp : Screens()
 
         @Serializable
-        object EmailLogIn
+        data object EmailLogIn : Screens()
     }
 
     @Serializable
-    object App {
+    data object App : Screens() {
         @Serializable
         data class Home(
             val name: String,
-        )
+        ) : Screens()
     }
 }
 
@@ -69,16 +69,20 @@ fun NestedNavStartDestination() {
         navController = navController,
         startDestination = Screens.Auth
     ) {
-        authGraph(navController)
+        authGraph(
+            navController,
+            screen = Screens.Auth.EmailLogIn
+        )
         appGraph(navController)
     }
 }
 
 private fun NavGraphBuilder.authGraph(
     navController: NavHostController,
+    screen: Screens,
 ) {
     navigation<Screens.Auth>(
-        startDestination = Screens.Auth.EmailLogIn
+        startDestination = screen
     ) {
         composable<Screens.Auth.EmailLogIn> {
             Column(
